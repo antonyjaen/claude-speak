@@ -1,4 +1,4 @@
-"""Top-level CLI for claude-voice."""
+﻿"""Top-level CLI for claude-speak."""
 from __future__ import annotations
 
 import os
@@ -10,7 +10,7 @@ from typing import Optional
 import click
 from rich.console import Console
 
-from claude_voice import __version__
+from claude_speak import __version__
 
 console = Console()
 
@@ -34,7 +34,7 @@ def main() -> None:
 # ----------------------------------------------------------------------------
 @main.command(help="Register the Stop hook in ~/.claude/settings.json.")
 def install() -> None:
-    from claude_voice.install import install_hooks
+    from claude_speak.install import install_hooks
 
     path, added = install_hooks()
     msg = "[green]Installed[/green]" if added else "[yellow]Already installed[/yellow]"
@@ -43,7 +43,7 @@ def install() -> None:
 
 @main.command(help="Remove the Stop hook from ~/.claude/settings.json.")
 def uninstall() -> None:
-    from claude_voice.install import uninstall_hooks
+    from claude_speak.install import uninstall_hooks
 
     path, removed = uninstall_hooks()
     msg = "[green]Removed[/green]" if removed else "[yellow]No hook to remove[/yellow]"
@@ -53,7 +53,7 @@ def uninstall() -> None:
 # ----------------------------------------------------------------------------
 @main.command(help="Stop any TTS speech currently playing.")
 def stop() -> None:
-    from claude_voice import pidfile
+    from claude_speak import pidfile
 
     pids = pidfile.read_all("playing")
     alive = [p for p in pids if pidfile.is_alive(p)]
@@ -67,15 +67,15 @@ def stop() -> None:
 
 # ----------------------------------------------------------------------------
 @main.command("voice-help",
-              help="Print every claude-voice slash command with a description.")
+              help="Print every claude-speak slash command with a description.")
 def voice_help() -> None:
-    from claude_voice.commands import _COMMANDS
+    from claude_speak.commands import _COMMANDS
 
-    console.print("[bold]claude-voice slash commands[/bold]\n")
+    console.print("[bold]claude-speak slash commands[/bold]\n")
     for name, desc, _cmd in _COMMANDS:
         console.print(f"  [cyan]/{name:<22}[/cyan] {desc}")
     console.print(
-        "\n[dim]Setting tweaks: claude-voice config show / set / reset[/dim]"
+        "\n[dim]Setting tweaks: claude-speak config show / set / reset[/dim]"
     )
 
 
@@ -83,7 +83,7 @@ def voice_help() -> None:
 
 @main.command(help="Toggle speak mode between end and narrate.")
 def mode() -> None:
-    from claude_voice import config as cfg
+    from claude_speak import config as cfg
 
     current = str(cfg.get("speak_mode", "end")).lower().strip()
     if current in ("narrate", "interview"):
@@ -101,8 +101,8 @@ def mode() -> None:
 def statusline() -> None:
     """Short summary of voice state. ANSI-colored, ASCII-only labels so the
     cp1252 console can render it. Forced UTF-8 stdout for safety."""
-    from claude_voice import config as cfg
-    from claude_voice import pidfile
+    from claude_speak import config as cfg
+    from claude_speak import pidfile
 
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -139,10 +139,10 @@ def statusline() -> None:
     print(" ".join(pieces))
 
 
-@main.command(help="Wire claude-voice statusline into ~/.claude/settings.json.")
+@main.command(help="Wire claude-speak statusline into ~/.claude/settings.json.")
 @click.option("--force", is_flag=True, help="Replace existing statusLine if any.")
 def install_statusline(force: bool) -> None:
-    from claude_voice.install import install_statusline as _install
+    from claude_speak.install import install_statusline as _install
 
     path, action = _install(force=force)
     color = {"installed": "green", "kept": "yellow", "replaced": "green"}[action]
@@ -152,8 +152,8 @@ def install_statusline(force: bool) -> None:
 @main.command(help="Install PreToolUse hook for interview mode (narrates while working). "
                    "Also sets speak_mode=interview in config.")
 def install_interview() -> None:
-    from claude_voice.install import install_interview_hooks
-    from claude_voice import config as cfg
+    from claude_speak.install import install_interview_hooks
+    from claude_speak import config as cfg
 
     path, added = install_interview_hooks()
     cfg.set_value("speak_mode", "narrate")
@@ -164,8 +164,8 @@ def install_interview() -> None:
 
 @main.command(help="Remove the PreToolUse hook and revert to end mode.")
 def uninstall_interview() -> None:
-    from claude_voice.install import uninstall_interview_hooks
-    from claude_voice import config as cfg
+    from claude_speak.install import uninstall_interview_hooks
+    from claude_speak import config as cfg
 
     path, removed = uninstall_interview_hooks()
     cfg.set_value("speak_mode", "end")
@@ -177,7 +177,7 @@ def uninstall_interview() -> None:
 @main.command(help="Append the Speaker-line instruction to ~/.claude/CLAUDE.md "
                    "so Claude includes a TTS-friendly summary in every reply.")
 def install_speaker() -> None:
-    from claude_voice.install import install_speaker as _install
+    from claude_speak.install import install_speaker as _install
 
     path, action = _install()
     color = {"installed": "green", "updated": "green", "kept": "yellow"}.get(action, "green")
@@ -186,7 +186,7 @@ def install_speaker() -> None:
 
 @main.command(help="Remove the Speaker-line instruction from ~/.claude/CLAUDE.md.")
 def uninstall_speaker() -> None:
-    from claude_voice.install import uninstall_speaker as _uninstall
+    from claude_speak.install import uninstall_speaker as _uninstall
 
     path, removed = _uninstall()
     msg = "[green]Removed[/green]" if removed else "[yellow]Nothing to remove[/yellow]"
@@ -197,7 +197,7 @@ def uninstall_speaker() -> None:
 @main.command(help="Speak text using the configured TTS backend.")
 @click.argument("text", nargs=-1, required=True)
 def speak(text: tuple[str, ...]) -> None:
-    from claude_voice import filters, tts
+    from claude_speak import filters, tts
 
     body = " ".join(text)
     cleaned = filters.clean_for_speech(body)
@@ -208,7 +208,7 @@ def speak(text: tuple[str, ...]) -> None:
 @main.command(help="List available Edge TTS voices.")
 @click.option("--lang", "-l", default="en", show_default=True)
 def voices(lang: str) -> None:
-    from claude_voice.tts import list_edge_voices
+    from claude_speak.tts import list_edge_voices
 
     try:
         items = list_edge_voices(lang or None)
@@ -218,7 +218,7 @@ def voices(lang: str) -> None:
     if not items:
         console.print(f"[yellow]No voices match '{lang}'.[/yellow]")
         return
-    console.print(f"[bold]{len(items)} voices[/bold] (set with CLAUDE_VOICE_VOICE):\n")
+    console.print(f"[bold]{len(items)} voices[/bold] (set with claude_speak_VOICE):\n")
     for v in items:
         short = v.get("ShortName", "?")
         gender = v.get("Gender", "?")
@@ -233,7 +233,7 @@ def voices(lang: str) -> None:
 # ----------------------------------------------------------------------------
 @main.command(help="Install /voice-* slash commands into ~/.claude/commands/.")
 def commands_install() -> None:
-    from claude_voice.commands import install_slash_commands
+    from claude_speak.commands import install_slash_commands
 
     paths = install_slash_commands()
     console.print(
@@ -245,7 +245,7 @@ def commands_install() -> None:
 
 
 # ----------------------------------------------------------------------------
-@main.group(help="Read or update settings in ~/.claude-voice/config.json. "
+@main.group(help="Read or update settings in ~/.claude-speak/config.json. "
                  "Daemon picks up changes immediately — no restart needed.")
 def config() -> None:
     pass
@@ -253,7 +253,7 @@ def config() -> None:
 
 @config.command("show", help="Print every setting with its current effective value and source.")
 def config_show() -> None:
-    from claude_voice import config as cfg
+    from claude_speak import config as cfg
 
     eff = cfg.effective()
     console.print(f"[dim]{cfg.CONFIG_PATH}[/dim]\n")
@@ -267,7 +267,7 @@ def config_show() -> None:
 @config.command("get", help="Print the current effective value for one key.")
 @click.argument("key")
 def config_get(key: str) -> None:
-    from claude_voice import config as cfg
+    from claude_speak import config as cfg
 
     val = cfg.get(key)
     console.print(f"{key} = {val!r}")
@@ -278,7 +278,7 @@ def config_get(key: str) -> None:
 @click.argument("key")
 @click.argument("value", nargs=-1)
 def config_set(key: str, value: tuple[str, ...]) -> None:
-    from claude_voice import config as cfg
+    from claude_speak import config as cfg
 
     joined = " ".join(value) if value else ""
     cfg.set_value(key, joined)
@@ -288,7 +288,7 @@ def config_set(key: str, value: tuple[str, ...]) -> None:
 @config.command("reset", help="Remove a key (or all keys when called with no argument).")
 @click.argument("key", required=False)
 def config_reset(key: Optional[str] = None) -> None:
-    from claude_voice import config as cfg
+    from claude_speak import config as cfg
 
     cfg.reset(key)
     console.print("[green]reset[/green] " + (key or "(all keys)"))
@@ -301,19 +301,19 @@ def hook() -> None:
 
 @hook.command("stop", help="Stop-hook handler. Reads Claude Code payload from stdin.")
 def hook_stop() -> None:
-    from claude_voice.hooks import stop_hook
+    from claude_speak.hooks import stop_hook
     sys.exit(stop_hook())
 
 
 @hook.command("pre-tool", help="PreToolUse hook handler (interview mode). Reads Claude Code payload from stdin.")
 def hook_pre_tool() -> None:
-    from claude_voice.hooks import pre_tool_hook
+    from claude_speak.hooks import pre_tool_hook
     sys.exit(pre_tool_hook())
 
 
 @hook.command("post-tool", help="PostToolUse hook handler. Reads Claude Code payload from stdin.")
 def hook_post_tool() -> None:
-    from claude_voice.hooks import post_tool_hook
+    from claude_speak.hooks import post_tool_hook
     sys.exit(post_tool_hook())
 
 
@@ -321,19 +321,19 @@ def hook_post_tool() -> None:
 @main.command(help="Diagnose TTS backend, hooks, and platform support.")
 def doctor() -> None:
     import platform
-    from claude_voice import pidfile
-    from claude_voice.install import HOOK_COMMAND, _settings_path
+    from claude_speak import pidfile
+    from claude_speak.install import HOOK_COMMAND, _settings_path
 
-    console.rule("[bold]claude-voice doctor[/bold]")
+    console.rule("[bold]claude-speak doctor[/bold]")
     console.print(f"Python:   [bold]{sys.version.split()[0]}[/bold]")
     console.print(f"Platform: [bold]{platform.platform()}[/bold]")
-    console.print(f"Backend:  [bold]{os.environ.get('CLAUDE_VOICE_BACKEND', 'edge')}[/bold]")
-    explicit_voice = os.environ.get("CLAUDE_VOICE_VOICE")
+    console.print(f"Backend:  [bold]{os.environ.get('claude_speak_BACKEND', 'edge')}[/bold]")
+    explicit_voice = os.environ.get("claude_speak_VOICE")
     if explicit_voice:
         console.print(f"Voice:    [bold]{explicit_voice}[/bold] (forced — language detection disabled)")
     else:
-        en = os.environ.get("CLAUDE_VOICE_VOICE_EN", "en-US-AriaNeural")
-        es = os.environ.get("CLAUDE_VOICE_VOICE_ES", "es-MX-DaliaNeural")
+        en = os.environ.get("claude_speak_VOICE_EN", "en-US-AriaNeural")
+        es = os.environ.get("claude_speak_VOICE_ES", "es-MX-DaliaNeural")
         console.print(f"Voice EN: [bold]{en}[/bold]")
         console.print(f"Voice ES: [bold]{es}[/bold]")
 

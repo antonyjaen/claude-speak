@@ -1,4 +1,4 @@
-"""Detached pipeline player: generates edge-tts audio and plays sentences in order.
+﻿"""Detached pipeline player: generates edge-tts audio and plays sentences in order.
 
 Spawned by tts.speak_pipeline_detached(). Reads a JSON config file containing
 a list of sentences, generates MP3 audio for each via edge-tts (pipelined: next
@@ -19,7 +19,7 @@ from pathlib import Path
 
 os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
 
-SPEAKING_LOCK = Path.home() / ".claude-voice" / "speaking.lock"
+SPEAKING_LOCK = Path.home() / ".claude-speak" / "speaking.lock"
 
 
 def _touch_lock() -> None:
@@ -51,7 +51,7 @@ def main() -> int:
             pass
 
     if len(sys.argv) < 2:
-        print("Usage: python -m claude_voice.pipeline_player <config.json>", file=sys.stderr)
+        print("Usage: python -m claude_speak.pipeline_player <config.json>", file=sys.stderr)
         return 2
 
     config_path = sys.argv[1]
@@ -144,7 +144,7 @@ def main() -> int:
     finally:
         _clear_lock()
         try:
-            from claude_voice import pidfile as _pf
+            from claude_speak import pidfile as _pf
             _pf.remove("playing", os.getpid())
         except Exception:
             pass

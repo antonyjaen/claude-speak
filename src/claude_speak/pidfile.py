@@ -1,7 +1,7 @@
-"""Tiny pidfile-based IPC for tracking running claude-voice processes.
+﻿"""Tiny pidfile-based IPC for tracking running claude-speak processes.
 
-Used so `claude-voice stop` can interrupt TTS started by the Stop hook and
-`claude-voice listen --stop` can shut down a backgrounded listener.
+Used so `claude-speak stop` can interrupt TTS started by the Stop hook and
+`claude-speak listen --stop` can shut down a backgrounded listener.
 """
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ import signal
 import sys
 from pathlib import Path
 
-STATE_DIR = Path.home() / ".claude-voice"
+STATE_DIR = Path.home() / ".claude-speak"
 
 
 def _path(name: str) -> Path:

@@ -1,4 +1,4 @@
-"""Entry points called by Claude Code hooks."""
+﻿"""Entry points called by Claude Code hooks."""
 from __future__ import annotations
 
 import json
@@ -6,10 +6,10 @@ import re
 import sys
 from pathlib import Path
 
-from claude_voice import filters, transcript, tts
+from claude_speak import filters, transcript, tts
 
-_STATE_DIR = Path.home() / ".claude-voice" / "sessions"
-_PRIMARY_SESSION_FILE = Path.home() / ".claude-voice" / "primary_session"
+_STATE_DIR = Path.home() / ".claude-speak" / "sessions"
+_PRIMARY_SESSION_FILE = Path.home() / ".claude-speak" / "primary_session"
 
 _SPEAKER_STRIP = re.compile(
     r"\n*(?:\*\*\s*)?🔊?\s*(?:Speaker|Hablante)\s*:.*$",
@@ -61,7 +61,7 @@ def _acquire_primary(session_id: str) -> bool:
 
 
 def _max_chars() -> int:
-    from claude_voice import config
+    from claude_speak import config
     try:
         return int(config.get("max_chars", 1200))
     except (TypeError, ValueError):
@@ -69,7 +69,7 @@ def _max_chars() -> int:
 
 
 def _speak_mode() -> str:
-    from claude_voice import config
+    from claude_speak import config
     return str(config.get("speak_mode", "end")).lower().strip()
 
 
@@ -82,7 +82,7 @@ def _emit(sentences: list[str], *, queue: bool = False) -> None:
         else:
             tts.speak_pipeline_detached(sentences)
     except Exception as exc:
-        print(f"claude-voice: tts failed: {exc}", file=sys.stderr)
+        print(f"claude-speak: tts failed: {exc}", file=sys.stderr)
 
 
 def _clean_mid(text: str) -> list[str]:
@@ -202,7 +202,7 @@ def stop_hook() -> int:
     if not path:
         return 0
 
-    from claude_voice import config as _config
+    from claude_speak import config as _config
     mode = _speak_mode()
     speaker_only = bool(_config.get("speaker_only", False))
 

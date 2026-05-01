@@ -1,10 +1,10 @@
-"""Cross-platform text-to-speech with selectable backends.
+﻿"""Cross-platform text-to-speech with selectable backends.
 
 While speech is playing, a ``speaking.lock`` file is touched at
-``~/.claude-voice/speaking.lock`` so the listener can skip audio while we're
+``~/.claude-speak/speaking.lock`` so the listener can skip audio while we're
 talking (echo / feedback suppression for conversation mode).
 
-Backends (env var ``CLAUDE_VOICE_BACKEND``):
+Backends (env var ``claude_speak_BACKEND``):
   * ``edge``   (default) — Microsoft Edge neural voices via the free public
     edge-tts API. Online, high quality, dozens of voices.
   * ``system`` — OS-native engines. Offline, lower quality.
@@ -12,8 +12,8 @@ Backends (env var ``CLAUDE_VOICE_BACKEND``):
     - macOS: ``say``
     - Linux: ``espeak-ng`` then ``espeak`` then ``spd-say``
 
-Voice (env var ``CLAUDE_VOICE_VOICE``): for the ``edge`` backend, an Azure
-voice name like ``en-US-AriaNeural``. List options with ``claude-voice voices``.
+Voice (env var ``claude_speak_VOICE``): for the ``edge`` backend, an Azure
+voice name like ``en-US-AriaNeural``. List options with ``claude-speak voices``.
 """
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ from typing import Optional
 # Suppress pygame's startup banner before any pygame import path is touched.
 os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
 
-SPEAKING_LOCK = Path.home() / ".claude-voice" / "speaking.lock"
+SPEAKING_LOCK = Path.home() / ".claude-speak" / "speaking.lock"
 
 
 def _set_speaking(active: bool) -> None:
@@ -67,7 +67,7 @@ _current: Optional[tuple[str, object]] = None  # ("proc"|"pygame", handle)
 _pygame_inited = False
 
 
-from claude_voice import config as _config
+from claude_speak import config as _config
 
 
 def _backend() -> str:
@@ -212,7 +212,7 @@ def _edge_to_mp3(text: str, voice: str, rate: int) -> str:
 
     import edge_tts
 
-    fd, path = tempfile.mkstemp(suffix=".mp3", prefix="claude-voice-")
+    fd, path = tempfile.mkstemp(suffix=".mp3", prefix="claude-speak-")
     os.close(fd)
 
     async def _gen() -> None:
@@ -291,15 +291,15 @@ def _play_detached(path: str) -> None:
         kwargs["start_new_session"] = True
 
     proc = subprocess.Popen(
-        [_windowless_python(), "-m", "claude_voice.player", path],
+        [_windowless_python(), "-m", "claude_speak.player", path],
         **kwargs,
     )
     with _state_lock:
         global _current
         _current = ("proc", proc)
-    # Register PID so `claude-voice stop` can find it.
+    # Register PID so `claude-speak stop` can find it.
     try:
-        from claude_voice import pidfile
+        from claude_speak import pidfile
         pidfile.append("playing", proc.pid)
     except Exception:
         pass
@@ -331,7 +331,7 @@ def speak(text: str, *, blocking: bool = True) -> None:
             return None
         except Exception as exc:
             print(
-                f"[claude-voice] edge-tts failed "
+                f"[claude-speak] edge-tts failed "
                 f"({exc.__class__.__name__}: {exc}); falling back to system TTS",
                 file=sys.stderr,
             )
@@ -406,14 +406,14 @@ def _launch_pipeline(sentences: list[str]) -> None:
         kwargs["start_new_session"] = True
 
     proc = subprocess.Popen(
-        [_windowless_python(), "-m", "claude_voice.pipeline_player", tmp],
+        [_windowless_python(), "-m", "claude_speak.pipeline_player", tmp],
         **kwargs,
     )
     with _state_lock:
         global _current
         _current = ("proc", proc)
     try:
-        from claude_voice import pidfile
+        from claude_speak import pidfile
         pidfile.append("playing", proc.pid)
     except Exception:
         pass

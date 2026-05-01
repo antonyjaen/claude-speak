@@ -1,5 +1,5 @@
-<p align="center">
-  <img src="icon/banner.svg" alt="claude-voice — TTS for Claude Code" width="800"/>
+﻿<p align="center">
+  <img src="icon/banner.svg" alt="claude-speak — TTS for Claude Code" width="800"/>
 </p>
 
 Hear every Claude Code reply without lifting a finger. Installs as a [Claude Code hook](https://docs.anthropic.com/en/docs/claude-code/hooks) — no API keys, no config required.
@@ -20,14 +20,14 @@ Claude finishes         →  full reply              spoken aloud
 
 ```bash
 # 1. Install the package
-pipx install claude-voice
+pipx install claude-speak
 
 # 2. Register hooks in ~/.claude/settings.json
-claude-voice install-interview   # recommended: narrate tool calls + speak final reply
-# claude-voice install           # minimal: speak final reply only
+claude-speak install-interview   # recommended: narrate tool calls + speak final reply
+# claude-speak install           # minimal: speak final reply only
 ```
 
-> **Python ≥ 3.9** required. `pipx` keeps it isolated — `pip install claude-voice` also works.
+> **Python ≥ 3.9** required. `pipx` keeps it isolated — `pip install claude-speak` also works.
 
 ### Platform notes
 
@@ -50,9 +50,9 @@ Three speaking modes control what gets spoken:
 
 | Mode | What's spoken | How to enable |
 |---|---|---|
-| `narrate` ✦ recommended | Tool calls narrated live, then the final reply | `claude-voice install-interview` |
-| `end` | The full final response only | `claude-voice install` |
-| `end` + speaker-only | Only the `🔊 Speaker:` line if present | `claude-voice install-speaker` |
+| `narrate` ✦ recommended | Tool calls narrated live, then the final reply | `claude-speak install-interview` |
+| `end` | The full final response only | `claude-speak install` |
+| `end` + speaker-only | Only the `🔊 Speaker:` line if present | `claude-speak install-speaker` |
 
 ---
 
@@ -62,36 +62,36 @@ Type these directly in the Claude Code prompt:
 
 | Command | What it does |
 |---|---|
-| `/claude-voice:shh` | Stop speaking immediately |
-| `/claude-voice:mode` | Toggle between `end` and `narrate` |
-| `/claude-voice:speaker-only` | Speak only the `🔊 Speaker:` summary line |
-| `/claude-voice:speaker-full` | Speak the full response (default) |
-| `/claude-voice:narrate` | Enable narrate mode (speaks while working) |
-| `/claude-voice:narrate-stop` | Disable narrate mode |
-| `/claude-voice:config` | Show current configuration |
-| `/claude-voice:help` | Show help text |
-| `/claude-voice:uninstall` | Remove all hooks and slash commands |
+| `/claude-speak:shh` | Stop speaking immediately |
+| `/claude-speak:mode` | Toggle between `end` and `narrate` |
+| `/claude-speak:speaker-only` | Speak only the `🔊 Speaker:` summary line |
+| `/claude-speak:speaker-full` | Speak the full response (default) |
+| `/claude-speak:narrate` | Enable narrate mode (speaks while working) |
+| `/claude-speak:narrate-stop` | Disable narrate mode |
+| `/claude-speak:config` | Show current configuration |
+| `/claude-speak:help` | Show help text |
+| `/claude-speak:uninstall` | Remove all hooks and slash commands |
 
 ---
 
 ## CLI reference
 
 ```bash
-claude-voice install            # register Stop hook
-claude-voice install-speaker    # register Speaker-line extraction
-claude-voice install-interview  # register narrate (PreToolUse) hook
-claude-voice uninstall          # remove all hooks
-claude-voice uninstall-interview
+claude-speak install            # register Stop hook
+claude-speak install-speaker    # register Speaker-line extraction
+claude-speak install-interview  # register narrate (PreToolUse) hook
+claude-speak uninstall          # remove all hooks
+claude-speak uninstall-interview
 
-claude-voice speak "hello"      # one-shot TTS test
-claude-voice voices             # list available voices
-claude-voice config show        # show all settings
-claude-voice config set <key> <value>
-claude-voice mode               # toggle end ↔ narrate
-claude-voice stop               # stop current playback
+claude-speak speak "hello"      # one-shot TTS test
+claude-speak voices             # list available voices
+claude-speak config show        # show all settings
+claude-speak config set <key> <value>
+claude-speak mode               # toggle end ↔ narrate
+claude-speak stop               # stop current playback
 
-claude-voice hook stop          # (internal) called by Claude Code Stop hook
-claude-voice hook pre-tool      # (internal) called by Claude Code PreToolUse hook
+claude-speak hook stop          # (internal) called by Claude Code Stop hook
+claude-speak hook pre-tool      # (internal) called by Claude Code PreToolUse hook
 ```
 
 ---
@@ -101,23 +101,23 @@ claude-voice hook pre-tool      # (internal) called by Claude Code PreToolUse ho
 All settings can be overridden with environment variables or set persistently:
 
 ```bash
-claude-voice config set voice_en en-GB-SoniaNeural
-claude-voice config set speak_mode narrate
-claude-voice config set max_chars 800
+claude-speak config set voice_en en-GB-SoniaNeural
+claude-speak config set speak_mode narrate
+claude-speak config set max_chars 800
 ```
 
 | Key | Env var | Default | Description |
 |---|---|---|---|
-| `speak_mode` | `CLAUDE_VOICE_SPEAK_MODE` | `end` | `end` · `narrate` |
-| `speaker_only` | `CLAUDE_VOICE_SPEAKER_ONLY` | `false` | Speak only the `🔊 Speaker:` line |
-| `backend` | `CLAUDE_VOICE_BACKEND` | `edge` | `edge` (online) · `system` (offline) |
-| `voice` | `CLAUDE_VOICE_VOICE` | _(unset)_ | Override both EN and ES voices |
-| `voice_en` | `CLAUDE_VOICE_VOICE_EN` | `en-US-AriaNeural` | English voice |
-| `voice_es` | `CLAUDE_VOICE_VOICE_ES` | `es-MX-DaliaNeural` | Spanish voice |
-| `rate` | `CLAUDE_VOICE_RATE` | `0` | Speed offset: Edge uses percent (`-50`..`100`) |
-| `max_chars` | `CLAUDE_VOICE_MAX_CHARS` | `1200` | Truncate responses longer than this |
-| `wake_word` | `CLAUDE_VOICE_WAKE_WORD` | _(unset)_ | Require this phrase before speaking |
-| `focus_pattern` | `CLAUDE_VOICE_FOCUS_PATTERN` | _(unset)_ | Regex — only speak if active window matches |
+| `speak_mode` | `CLAUDE_SPEAK_SPEAK_MODE` | `end` | `end` · `narrate` |
+| `speaker_only` | `CLAUDE_SPEAK_SPEAKER_ONLY` | `false` | Speak only the `🔊 Speaker:` line |
+| `backend` | `CLAUDE_SPEAK_BACKEND` | `edge` | `edge` (online) · `system` (offline) |
+| `voice` | `CLAUDE_SPEAK_VOICE` | _(unset)_ | Override both EN and ES voices |
+| `voice_en` | `CLAUDE_SPEAK_VOICE_EN` | `en-US-AriaNeural` | English voice |
+| `voice_es` | `CLAUDE_SPEAK_VOICE_ES` | `es-MX-DaliaNeural` | Spanish voice |
+| `rate` | `CLAUDE_SPEAK_RATE` | `0` | Speed offset: Edge uses percent (`-50`..`100`) |
+| `max_chars` | `CLAUDE_SPEAK_MAX_CHARS` | `1200` | Truncate responses longer than this |
+| `wake_word` | `CLAUDE_SPEAK_WAKE_WORD` | _(unset)_ | Require this phrase before speaking |
+| `focus_pattern` | `CLAUDE_SPEAK_FOCUS_PATTERN` | _(unset)_ | Regex — only speak if active window matches |
 
 ---
 
@@ -126,14 +126,14 @@ claude-voice config set max_chars 800
 List all available Edge voices:
 
 ```bash
-claude-voice voices
+claude-speak voices
 ```
 
 Set your preferred voice:
 
 ```bash
-claude-voice config set voice_en en-GB-RyanNeural    # British male
-claude-voice config set voice_es es-ES-ElviraNeural  # Spain Spanish female
+claude-speak config set voice_en en-GB-RyanNeural    # British male
+claude-speak config set voice_es es-ES-ElviraNeural  # Spain Spanish female
 ```
 
 Language is detected automatically per response (EN/ES). Set `voice` (not `voice_en`/`voice_es`) to force a single voice for all languages.
@@ -145,7 +145,7 @@ Language is detected automatically per response (EN/ES). Set `voice` (not `voice
 Add the current mode to your Claude Code status bar:
 
 ```bash
-claude-voice install-statusline
+claude-speak install-statusline
 ```
 
 Shows `🔊 end`, `🔊 narrate`, or `🔇 off` depending on active hooks.
@@ -155,7 +155,7 @@ Shows `🔊 end`, `🔊 narrate`, or `🔇 off` depending on active hooks.
 ## Diagnostics
 
 ```bash
-claude-voice doctor
+claude-speak doctor
 ```
 
 Checks: Python version, `pygame` playback, Edge TTS connectivity, hooks registered in `~/.claude/settings.json`, slash commands installed.
@@ -166,10 +166,10 @@ Checks: Python version, `pygame` playback, Edge TTS connectivity, hooks register
 
 ```bash
 # Remove hooks + slash commands (keeps package installed)
-claude-voice uninstall
+claude-speak uninstall
 
 # Remove the package entirely
-pipx uninstall claude-voice
+pipx uninstall claude-speak
 ```
 
 ---

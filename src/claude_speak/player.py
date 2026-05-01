@@ -1,4 +1,4 @@
-"""Standalone MP3 player. Spawned as a detached subprocess so audio survives
+﻿"""Standalone MP3 player. Spawned as a detached subprocess so audio survives
 the parent process exiting (e.g. when the Stop hook returns).
 
 Manages the speaking.lock file so the listener can suppress its own input
@@ -12,7 +12,7 @@ from pathlib import Path
 
 os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
 
-SPEAKING_LOCK = Path.home() / ".claude-voice" / "speaking.lock"
+SPEAKING_LOCK = Path.home() / ".claude-speak" / "speaking.lock"
 
 
 def _set_speaking(active: bool) -> None:
@@ -36,7 +36,7 @@ def main() -> int:
         except Exception:
             pass
     if len(sys.argv) < 2:
-        print("Usage: python -m claude_voice.player <audio-file>", file=sys.stderr)
+        print("Usage: python -m claude_speak.player <audio-file>", file=sys.stderr)
         return 2
     path = sys.argv[1]
 

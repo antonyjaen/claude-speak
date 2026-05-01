@@ -1,5 +1,5 @@
-"""Patch ~/.claude/settings.json to register / remove the Stop hook and
-optionally wire claude-voice into the Claude Code status line."""
+﻿"""Patch ~/.claude/settings.json to register / remove the Stop hook and
+optionally wire claude-speak into the Claude Code status line."""
 from __future__ import annotations
 
 import json
@@ -11,12 +11,12 @@ from typing import Optional
 
 
 def _resolved_exe() -> str:
-    """Find the claude-voice executable. Strategy:
+    """Find the claude-speak executable. Strategy:
 
     1. ``sys.argv[0]`` — the script that invoked us, when it's the exe shim.
     2. ``shutil.which`` — checks PATH.
     3. Common Windows pipx locations.
-    4. Bare ``claude-voice`` fallback (relies on PATH at hook time).
+    4. Bare ``claude-speak`` fallback (relies on PATH at hook time).
 
     Forward slashes are returned so the path works in both git bash and cmd.
     """
@@ -33,27 +33,27 @@ def _resolved_exe() -> str:
 
     # 1. argv[0] when invoked via the .exe shim
     candidate = _ok(sys.argv[0]) if sys.argv else None
-    # The shim might appear as `..\Scripts\claude-voice.exe`
-    if candidate and "claude-voice" in candidate.lower():
+    # The shim might appear as `..\Scripts\claude-speak.exe`
+    if candidate and "claude-speak" in candidate.lower():
         return str(Path(candidate).resolve()).replace("\\", "/")
 
     # 2. PATH lookup
-    candidate = shutil.which("claude-voice.exe") or shutil.which("claude-voice")
+    candidate = shutil.which("claude-speak.exe") or shutil.which("claude-speak")
     if _ok(candidate):
         return candidate.replace("\\", "/")  # type: ignore[union-attr]
 
     # 3. Known pipx + user-bin locations on Windows
     home = Path.home()
     for guess in (
-        home / ".local" / "bin" / "claude-voice.exe",
-        home / "pipx" / "venvs" / "claude-voice" / "Scripts" / "claude-voice.exe",
-        home / ".local" / "bin" / "claude-voice",
+        home / ".local" / "bin" / "claude-speak.exe",
+        home / "pipx" / "venvs" / "claude-speak" / "Scripts" / "claude-speak.exe",
+        home / ".local" / "bin" / "claude-speak",
     ):
         if guess.exists():
             return str(guess).replace("\\", "/")
 
     # 4. Last resort
-    return "claude-voice"
+    return "claude-speak"
 
 
 def _hook_command(args: str) -> str:
@@ -94,16 +94,16 @@ def _save(path: Path, data: dict) -> None:
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
-def _is_claude_voice_hook(command: str) -> bool:
-    return "claude-voice" in (command or "") and "hook stop" in (command or "")
+def _is_claude_speak_hook(command: str) -> bool:
+    return "claude-speak" in (command or "") and "hook stop" in (command or "")
 
 
 def _is_cv_interview_hook(command: str) -> bool:
-    return "claude-voice" in (command or "") and "hook pre-tool" in (command or "")
+    return "claude-speak" in (command or "") and "hook pre-tool" in (command or "")
 
 
 def _is_cv_post_tool_hook(command: str) -> bool:
-    return "claude-voice" in (command or "") and "hook post-tool" in (command or "")
+    return "claude-speak" in (command or "") and "hook post-tool" in (command or "")
 
 
 def _strip_hooks_by(entries: list, predicate) -> list:
@@ -121,20 +121,20 @@ def _strip_hooks_by(entries: list, predicate) -> list:
     return cleaned
 
 
-def _strip_claude_voice_hooks(entries: list) -> list:
-    return _strip_hooks_by(entries, _is_claude_voice_hook)
+def _strip_claude_speak_hooks(entries: list) -> list:
+    return _strip_hooks_by(entries, _is_claude_speak_hook)
 
 
 def install_hooks() -> tuple[Path, bool]:
     """(Re)register the Stop and PreToolUse hooks with the *current* absolute path.
-    Removes any prior claude-voice entries so we don't end up with duplicates
+    Removes any prior claude-speak entries so we don't end up with duplicates
     after an upgrade that changes how the command is resolved."""
     path = _settings_path()
     settings = _load(path)
     hooks = settings.setdefault("hooks", {})
 
     stop = hooks.setdefault(HOOK_EVENT, [])
-    cleaned_stop = _strip_claude_voice_hooks(stop)
+    cleaned_stop = _strip_claude_speak_hooks(stop)
     cleaned_stop.append({"hooks": [{"type": "command", "command": HOOK_COMMAND}]})
     hooks[HOOK_EVENT] = cleaned_stop
 
@@ -154,12 +154,12 @@ def install_hooks() -> tuple[Path, bool]:
     return path, changed
 
 
-_SPEAKER_BEGIN = "<!-- claude-voice-speaker-begin -->"
-_SPEAKER_END = "<!-- claude-voice-speaker-end -->"
+_SPEAKER_BEGIN = "<!-- claude-speak-speaker-begin -->"
+_SPEAKER_END = "<!-- claude-speak-speaker-end -->"
 
 _SPEAKER_BLOCK = f"""\
 {_SPEAKER_BEGIN}
-## Voice mode (claude-voice)
+## Voice mode (claude-speak)
 
 The user is interacting via voice. Their prompts are transcribed audio that
 arrives via push-to-talk or always-on dictation. They will read your full
@@ -229,7 +229,7 @@ def uninstall_speaker(*, scope: str = "user") -> tuple[Path, bool]:
 
 
 def install_statusline(*, force: bool = False) -> tuple[Path, str]:
-    """Install ``claude-voice statusline`` as Claude Code's statusLine command.
+    """Install ``claude-speak statusline`` as Claude Code's statusLine command.
 
     Returns ``(path, action)`` where ``action`` is ``"installed"``,
     ``"replaced"``, or ``"kept"`` (already present and not forced).
@@ -296,7 +296,7 @@ def uninstall_interview_hooks() -> tuple[Path, bool]:
 
 
 def uninstall_hooks() -> tuple[Path, bool]:
-    """Remove every claude-voice Stop hook (bare or absolute path form)."""
+    """Remove every claude-speak Stop hook (bare or absolute path form)."""
     path = _settings_path()
     if not path.exists():
         return path, False
@@ -304,7 +304,7 @@ def uninstall_hooks() -> tuple[Path, bool]:
     hooks = settings.get("hooks", {})
     stop = hooks.get(HOOK_EVENT, [])
 
-    cleaned = _strip_claude_voice_hooks(stop)
+    cleaned = _strip_claude_speak_hooks(stop)
     if cleaned == stop:
         return path, False
 

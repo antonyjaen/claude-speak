@@ -18,7 +18,6 @@ voice name like ``en-US-AriaNeural``. List options with ``claude-speak voices``.
 from __future__ import annotations
 
 import os
-import re
 import shutil
 import subprocess
 import sys
@@ -77,36 +76,17 @@ def _backend() -> str:
 _DEFAULT_VOICE_EN = "en-US-AriaNeural"
 _DEFAULT_VOICE_ES = "es-MX-DaliaNeural"
 
-# Common Spanish-only markers (diacritics, inverted punctuation, top function
-# words). Hits when at least one match exists in the text.
-_ES_HINT = re.compile(
-    r"[ñÑ¿¡]"
-    r"|[áéíóúÁÉÍÓÚ]"
-    r"|\b(el|la|los|las|de|del|que|qué|y|o|por|para|con|sin|pero|como|cómo|"
-    r"mi|tu|su|hola|gracias|por favor|sí|no|hay|está|estás|soy|eres|tengo|"
-    r"quiero|puedo|hacer|también)\b",
-    re.IGNORECASE,
-)
+def _voice(_text: Optional[str] = None) -> str:
+    """Return the voice to use based on config lang setting.
 
-
-def detect_language(text: str) -> str:
-    """Return ``'es'`` if the text looks Spanish, else ``'en'``."""
-    if not text:
-        return "en"
-    return "es" if _ES_HINT.search(text) else "en"
-
-
-def _voice(text: Optional[str] = None) -> str:
-    """Return the voice to use, optionally choosing per-text language.
-
-    Resolution order (each from config / env / default):
+    Resolution order:
       1. ``voice`` — explicit override, language-agnostic
-      2. ``voice_es`` / ``voice_en`` per-language
+      2. ``voice_es`` / ``voice_en`` based on ``lang`` config key
     """
     explicit = _config.get("voice", "")
     if explicit:
         return str(explicit)
-    lang = detect_language(text or "")
+    lang = str(_config.get("lang", "en")).strip().lower()
     if lang == "es":
         return str(_config.get("voice_es", _DEFAULT_VOICE_ES))
     return str(_config.get("voice_en", _DEFAULT_VOICE_EN))

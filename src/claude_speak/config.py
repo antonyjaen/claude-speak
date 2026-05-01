@@ -21,7 +21,7 @@ SCHEMA: dict[str, tuple[str, Any, Optional[type]]] = {
     "auto_submit":    ("CLAUDE_SPEAK_AUTO_SUBMIT",    False, bool),
     "rms_threshold":  ("CLAUDE_SPEAK_RMS_THRESHOLD",  0.012, float),
     "model":          ("CLAUDE_SPEAK_MODEL",          "base", str),
-    "lang":           ("CLAUDE_SPEAK_LANG",           "auto", str),
+    "lang":           ("CLAUDE_SPEAK_LANG",           "en", str),
     "backend":        ("CLAUDE_SPEAK_BACKEND",        "edge", str),
     "voice":          ("CLAUDE_SPEAK_VOICE",          "", str),
     "voice_en":       ("CLAUDE_SPEAK_VOICE_EN",       "en-US-AriaNeural", str),

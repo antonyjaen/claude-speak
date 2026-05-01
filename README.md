@@ -79,6 +79,8 @@ Type these directly in the Claude Code prompt:
 | `/claude-speak:narrate-stop` | Disable narrate mode |
 | `/claude-speak:config` | Show current configuration |
 | `/claude-speak:help` | Show help text |
+| `/claude-speak:lang-en` | Switch TTS voice to English |
+| `/claude-speak:lang-es` | Switch TTS voice to Spanish |
 | `/claude-speak:uninstall` | Remove all hooks and slash commands |
 
 ---
@@ -117,6 +119,7 @@ claude-speak config set max_chars 800
 
 | Key | Env var | Default | Description |
 |---|---|---|---|
+| `lang` | `CLAUDE_SPEAK_LANG` | `en` | `en` · `es` — voice language |
 | `speak_mode` | `CLAUDE_SPEAK_SPEAK_MODE` | `end` | `end` · `narrate` |
 | `speaker_only` | `CLAUDE_SPEAK_SPEAKER_ONLY` | `false` | Speak only the `🔊 Speaker:` line |
 | `backend` | `CLAUDE_SPEAK_BACKEND` | `edge` | `edge` (online) · `system` (offline) |
@@ -145,7 +148,14 @@ claude-speak config set voice_en en-GB-RyanNeural    # British male
 claude-speak config set voice_es es-ES-ElviraNeural  # Spain Spanish female
 ```
 
-Language is detected automatically per response (EN/ES). Set `voice` (not `voice_en`/`voice_es`) to force a single voice for all languages.
+Switch language with a slash command (default: English):
+
+```bash
+/claude-speak:lang-en   # switch to English voice
+/claude-speak:lang-es   # switch to Spanish voice
+```
+
+Set `voice` (not `voice_en`/`voice_es`) to force a single voice regardless of language.
 
 ---
 

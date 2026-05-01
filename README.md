@@ -5,8 +5,12 @@
 Hear every Claude Code reply without lifting a finger. Installs as a [Claude Code hook](https://docs.anthropic.com/en/docs/claude-code/hooks) — no API keys, no config required.
 
 ```
-claude replies → hook fires → text extracted → TTS speaks it
+Claude picks up a tool  →  "Reading the config…"  spoken aloud
+Claude picks up a tool  →  "Running the tests…"   spoken aloud
+Claude finishes         →  full reply              spoken aloud
 ```
+
+**Recommended mode: `narrate`** — voices each tool call as Claude works, then speaks the final reply. You always know what Claude is doing without looking at the screen.
 
 **Default backend:** Microsoft Edge TTS (free, neural, online). Swap to `system` for fully offline playback (Windows SAPI / macOS `say` / Linux `espeak-ng`).
 
@@ -18,8 +22,9 @@ claude replies → hook fires → text extracted → TTS speaks it
 # 1. Install the package
 pipx install claude-voice
 
-# 2. Register the Stop hook in ~/.claude/settings.json
-claude-voice install
+# 2. Register hooks in ~/.claude/settings.json
+claude-voice install-interview   # recommended: narrate tool calls + speak final reply
+# claude-voice install           # minimal: speak final reply only
 ```
 
 > **Python ≥ 3.9** required. `pipx` keeps it isolated — `pip install claude-voice` also works.
@@ -36,15 +41,18 @@ claude-voice install
 
 ## How it works
 
-Claude Code's **Stop** hook fires at the end of every assistant turn, passing the path to the conversation transcript. `claude-voice` reads the transcript, extracts the last assistant message, strips code blocks and markdown, and speaks the result.
+Two hooks wire into Claude Code's event system:
+
+- **PreToolUse** — fires before each tool call, speaks a short description of what Claude is about to do ("Searching for config files…", "Running tests…")
+- **Stop** — fires at the end of every turn, speaks the full final reply after stripping code blocks and markdown
 
 Three speaking modes control what gets spoken:
 
 | Mode | What's spoken | How to enable |
 |---|---|---|
-| `end` (default) | The full final response | installed by default |
+| `narrate` ✦ recommended | Tool calls narrated live, then the final reply | `claude-voice install-interview` |
+| `end` | The full final response only | `claude-voice install` |
 | `end` + speaker-only | Only the `🔊 Speaker:` line if present | `claude-voice install-speaker` |
-| `narrate` | Tool calls narrated while Claude works, then the final reply | `claude-voice install-interview` |
 
 ---
 

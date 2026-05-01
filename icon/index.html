@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { width: 1080px; height: 1080px; overflow: hidden; background: #011627; }
+    body { width: 1080px; height: 1080px; overflow: hidden; background: #0A0A0A; }
 
     #cv-icon {
       width: 1080px;
       height: 1080px;
-      background: #011627;
+      background: #0A0A0A;
       position: relative;
       overflow: hidden;
     }
@@ -20,7 +20,7 @@
       width: 560px;
       height: 560px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(46,196,182,0.07) 0%, transparent 68%);
+      background: radial-gradient(circle, rgba(204,85,0,0.13) 0%, transparent 68%);
       top: 50%;
       left: 50%;
       transform: translate(-50%, -52%);
@@ -30,7 +30,7 @@
       width: 320px;
       height: 320px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,159,28,0.06) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(245,166,35,0.09) 0%, transparent 70%);
       top: 50%;
       left: 50%;
       transform: translate(-50%, -52%);
@@ -40,14 +40,29 @@
       left: 200px;
       right: 200px;
       height: 1px;
-      background: rgba(65,90,119,0.25);
+      background: rgba(80,50,20,0.22);
     }
     .grid-line-v {
       position: absolute;
       top: 200px;
       bottom: 200px;
       width: 1px;
-      background: rgba(65,90,119,0.25);
+      background: rgba(80,50,20,0.22);
+    }
+
+    /* Terminal scanlines */
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.10) 3px,
+        rgba(0,0,0,0.10) 4px
+      );
+      pointer-events: none;
+      z-index: 10;
     }
 
     /* Equalizer bars */
@@ -65,13 +80,13 @@
       border-radius: 6px 6px 3px 3px;
       transform-origin: 50% 100%;
     }
-    #b1 { height: 96px;  background: #2EC4B6; }
-    #b2 { height: 168px; background: #40C7AA; }
-    #b3 { height: 234px; background: #72C694; }
-    #b4 { height: 276px; background: #FFBF69; }
-    #b5 { height: 226px; background: #F0A868; }
-    #b6 { height: 160px; background: #F0A060; }
-    #b7 { height: 90px;  background: #FF9F1C; }
+    #b1 { height: 96px;  background: #8C3200; }
+    #b2 { height: 168px; background: #A84000; }
+    #b3 { height: 234px; background: #C05000; }
+    #b4 { height: 276px; background: #CC5500; }
+    #b5 { height: 226px; background: #D96800; }
+    #b6 { height: 160px; background: #E88800; }
+    #b7 { height: 90px;  background: #F5A623; }
 
     /* Wordmark */
     .wordmark {
@@ -84,9 +99,9 @@
       font-weight: 500;
       font-size: 80px;
       letter-spacing: -2px;
-      color: #FDFFFC;
+      color: #F0F0F0;
     }
-    .wordmark .accent { color: #2EC4B6; }
+    .wordmark .accent { color: #CC5500; }
 
     /* Tagline */
     .tagline {
@@ -99,7 +114,7 @@
       font-weight: 400;
       font-size: 26px;
       letter-spacing: 6px;
-      color: #415A77;
+      color: #3A3A3A;
       text-transform: uppercase;
     }
 
@@ -110,7 +125,7 @@
       left: 280px;
       right: 280px;
       height: 1px;
-      background: linear-gradient(90deg, transparent, #415A77, transparent);
+      background: linear-gradient(90deg, transparent, #3A3A3A, transparent);
     }
   </style>
 </head>
@@ -118,8 +133,9 @@
   <div id="cv-icon" data-composition-id="cv-icon" data-start="0" data-width="1080" data-height="1080">
 
     <!-- Background layer -->
-    <div class="glow-ring"  id="glow-ring"></div>
-    <div class="glow-warm"  id="glow-warm"></div>
+    <div class="glow-ring"   id="glow-ring"></div>
+    <div class="glow-warm"   id="glow-warm"></div>
+    <div class="scanlines"   id="scanlines"></div>
     <div class="grid-line-h" id="gl-h1" style="top: 380px;"></div>
     <div class="grid-line-h" id="gl-h2" style="top: 620px;"></div>
     <div class="grid-line-v" id="gl-v1" style="left: 380px;"></div>
@@ -138,7 +154,7 @@
 
     <!-- Text -->
     <div class="wordmark" id="wordmark">claude<span class="accent">-voice</span></div>
-    <div class="tagline"  id="tagline">TTS · STT · HOOKS</div>
+    <div class="tagline"  id="tagline">VOICE · TTS · HOOKS</div>
     <div class="rule"     id="rule"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
@@ -147,16 +163,14 @@
 
       const DURATION = 10;
 
-      // Cycle durations
-      const BAR_HALF  = 0.38;  // single direction → full yoyo = 0.76s
-      const GLOW_HALF = 1.4;   // full yoyo = 2.8s
+      // Glow cycle
+      const GLOW_HALF = 1.4;  // full yoyo = 2.8s
 
       // Repeat counts (GSAP repeat = extra plays after first, so total = repeat+1)
       function reps(cycleDuration) {
         return Math.ceil(DURATION / cycleDuration) - 1;
       }
 
-      const BAR_REPS  = reps(BAR_HALF * 2);   // ≈13
       const GLOW_REPS = reps(GLOW_HALF * 2);  // ≈3
 
       const tl = gsap.timeline({ paused: true });
@@ -187,24 +201,24 @@
         }, 0.55 + i * 0.07);
       });
 
-      // ── Bars wave (equalizer) ─────────────────────────────────────────────
-      // Each bar gets a different target scale (min height ratio) and phase offset
+      // ── Bars wave — each bar has its own rhythm for organic motion ─────────
       const barWaves = [
-        { id: "#b1", minScale: 0.42, delay: 1.7  },
-        { id: "#b2", minScale: 0.55, delay: 1.55 },
-        { id: "#b3", minScale: 0.38, delay: 1.65 },
-        { id: "#b4", minScale: 0.62, delay: 1.50 },
-        { id: "#b5", minScale: 0.45, delay: 1.60 },
-        { id: "#b6", minScale: 0.58, delay: 1.58 },
-        { id: "#b7", minScale: 0.40, delay: 1.72 },
+        { id: "#b1", minScale: 0.35, delay: 1.70, dur: 0.40 },
+        { id: "#b2", minScale: 0.50, delay: 1.55, dur: 0.34 },
+        { id: "#b3", minScale: 0.22, delay: 1.65, dur: 0.38 },
+        { id: "#b4", minScale: 0.58, delay: 1.50, dur: 0.30 },
+        { id: "#b5", minScale: 0.28, delay: 1.60, dur: 0.36 },
+        { id: "#b6", minScale: 0.52, delay: 1.58, dur: 0.32 },
+        { id: "#b7", minScale: 0.32, delay: 1.72, dur: 0.42 },
       ];
-      barWaves.forEach(({ id, minScale, delay }) => {
+      barWaves.forEach(({ id, minScale, delay, dur }) => {
+        const rep = Math.ceil(DURATION / (dur * 2)) - 1;
         tl.to(id, {
           scaleY: minScale,
           transformOrigin: "50% 100%",
-          duration: BAR_HALF,
+          duration: dur,
           ease: "sine.inOut",
-          repeat: BAR_REPS,
+          repeat: rep,
           yoyo: true
         }, delay);
       });

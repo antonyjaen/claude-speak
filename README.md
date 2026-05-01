@@ -1,5 +1,9 @@
 # claude-voice
 
+<p align="center">
+  <img src="icon/banner.svg" alt="claude-voice — TTS for Claude Code" width="800"/>
+</p>
+
 Hear every Claude Code reply without lifting a finger. Installs as a [Claude Code hook](https://docs.anthropic.com/en/docs/claude-code/hooks) — no API keys, no config required.
 
 ```

@@ -1,5 +1,3 @@
-# claude-voice
-
 <p align="center">
   <img src="icon/banner.svg" alt="claude-voice — TTS for Claude Code" width="800"/>
 </p>

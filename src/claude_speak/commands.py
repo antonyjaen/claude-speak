@@ -1,9 +1,9 @@
-﻿"""Install claude-speak:* slash commands into ~/.claude/commands/."""
+﻿"""Install claude-speak:* slash commands into ~/.claude/commands/claude-speak/."""
 from __future__ import annotations
 
 from pathlib import Path
 
-COMMANDS_DIR = Path.home() / ".claude" / "commands"
+COMMANDS_DIR = Path.home() / ".claude" / "commands" / "claude-speak"
 
 _TEMPLATE = """---
 description: {description}
@@ -47,18 +47,22 @@ _COMMANDS = [
 
 def install_slash_commands() -> list[Path]:
     COMMANDS_DIR.mkdir(parents=True, exist_ok=True)
-    known = {f"{name}.md" for name, _, _ in _COMMANDS}
-    for stale in COMMANDS_DIR.glob("*.md"):
-        is_old = (
+
+    # Remove legacy flat files (pre-subdirectory layout, Windows-incompatible names)
+    legacy_dir = COMMANDS_DIR.parent
+    for stale in list(legacy_dir.glob("*.md")) + list(legacy_dir.iterdir()):
+        if stale.is_file() and (
             stale.name.startswith("voice-")
-            or stale.name in ("shh.md", "mode.md")
-            or stale.name.startswith("claude-speak:")
-        )
-        if is_old and stale.name not in known:
+            or stale.name in ("shh.md", "mode.md", "claude-voice")
+            or stale.name.startswith("claude-speak")
+        ):
             stale.unlink(missing_ok=True)
+
     written: list[Path] = []
     for name, desc, cmd in _COMMANDS:
-        p = COMMANDS_DIR / f"{name}.md"
+        # name is "claude-speak:shh"; file lives in subdir as "shh.md"
+        short = name.split(":", 1)[-1]
+        p = COMMANDS_DIR / f"{short}.md"
         p.write_text(_TEMPLATE.format(description=desc, command=cmd), encoding="utf-8")
         written.append(p)
     return written

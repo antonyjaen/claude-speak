@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "claude-speak"
-version = "0.1.0"
+version = "0.1.1"
 description = "Text-to-speech for Claude Code — hear every reply without lifting a finger"
 readme = "README.md"
 license = { text = "MIT" }

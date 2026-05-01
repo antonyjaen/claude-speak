@@ -29,6 +29,15 @@ claude-speak install-interview   # recommended: narrate tool calls + speak final
 
 > **Python ≥ 3.9** required. `pipx` keeps it isolated — `pip install claude-speak` also works.
 
+### Install via Claude prompt
+
+Paste this into any Claude Code session and Claude will install and wire everything up for you:
+
+```
+Install claude-speak so you speak every tool call and final reply aloud.
+Run: pipx install claude-speak && claude-speak install-interview
+```
+
 ### Platform notes
 
 | Platform | Notes |

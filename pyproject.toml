@@ -5,12 +5,12 @@ build-backend = "hatchling.build"
 [project]
 name = "claude-voice"
 version = "0.1.0"
-description = "Add push-to-talk and text-to-speech to Claude Code"
+description = "Text-to-speech for Claude Code — hear every reply without lifting a finger"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.9"
 authors = [{ name = "Antony Jaen" }]
-keywords = ["claude", "claude-code", "voice", "tts", "stt", "whisper"]
+keywords = ["claude", "claude-code", "voice", "tts", "text-to-speech", "hooks"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
@@ -21,20 +21,17 @@ classifiers = [
 ]
 dependencies = [
     "click>=8.1",
-    "faster-whisper>=1.0",
-    "numpy>=1.26",
-    "pynput>=1.7",
+    "edge-tts>=6.1",
+    "pygame>=2.5",
     "rich>=13.7",
-    "sounddevice>=0.4.6",
-    "soundfile>=0.12",
 ]
 
 [project.scripts]
 claude-voice = "claude_voice.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/tonyj/claude-voice"
-Issues = "https://github.com/tonyj/claude-voice/issues"
+Homepage = "https://github.com/antonyjaen/claude-voice"
+Issues = "https://github.com/antonyjaen/claude-voice/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/claude_voice"]

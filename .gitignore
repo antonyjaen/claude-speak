@@ -33,3 +33,9 @@ desktop.ini
 *.wav
 *.flac
 !examples/*.wav
+
+# HyperFrames render cache
+icon/.hyperframes/
+
+# Skills / agent tooling (not part of the distributed package)
+.agents/

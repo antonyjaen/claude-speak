@@ -53,12 +53,12 @@
   <!-- Tagline -->
   <text x="344" y="110"
         font-family="'Courier New',Courier,monospace"
-        font-size="12" fill="#888888" letter-spacing="5">VOICE · TTS · HOOKS</text>
+        font-size="12" fill="#F0F0F0" letter-spacing="5">VOICE · TTS · HOOKS</text>
 
   <!-- Install prompt -->
   <text x="344" y="148"
         font-family="'Courier New',Courier,monospace"
-        font-size="13" fill="#777777">$ pipx install claude-voice</text>
+        font-size="13" fill="#F0F0F0">$ pipx install claude-voice</text>
 
   <!-- Blinking cursor after install command -->
   <text class="cursor" x="555" y="148"

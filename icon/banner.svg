@@ -30,19 +30,19 @@
   <!-- 7 bars × 30px wide + 6 gaps × 12px = 282px                       -->
   <!-- centered in 320px left section: left margin = (320-282)/2 = 19px  -->
   <rect class="bar" x="19"  y="107" width="30" height="55"  rx="4" fill="#8C3200"
-        style="animation: w1 0.80s ease-in-out  0.00s infinite alternate;"/>
+        style="animation: w1 0.80s ease-in-out  0.00s 1 alternate forwards;"/>
   <rect class="bar" x="61"  y="62"  width="30" height="100" rx="4" fill="#A84000"
-        style="animation: w2 0.68s ease-in-out -0.15s infinite alternate;"/>
+        style="animation: w2 0.68s ease-in-out -0.15s 1 alternate forwards;"/>
   <rect class="bar" x="103" y="22"  width="30" height="140" rx="4" fill="#C05000"
-        style="animation: w3 0.76s ease-in-out -0.08s infinite alternate;"/>
+        style="animation: w3 0.76s ease-in-out -0.08s 1 alternate forwards;"/>
   <rect class="bar" x="145" y="42"  width="30" height="120" rx="4" fill="#CC5500"
-        style="animation: w4 0.60s ease-in-out -0.20s infinite alternate;"/>
+        style="animation: w4 0.60s ease-in-out -0.20s 1 alternate forwards;"/>
   <rect class="bar" x="187" y="32"  width="30" height="130" rx="4" fill="#D96800"
-        style="animation: w5 0.72s ease-in-out -0.12s infinite alternate;"/>
+        style="animation: w5 0.72s ease-in-out -0.12s 1 alternate forwards;"/>
   <rect class="bar" x="229" y="74"  width="30" height="88"  rx="4" fill="#E88800"
-        style="animation: w6 0.64s ease-in-out -0.18s infinite alternate;"/>
+        style="animation: w6 0.64s ease-in-out -0.18s 1 alternate forwards;"/>
   <rect class="bar" x="271" y="110" width="30" height="52"  rx="4" fill="#F5A623"
-        style="animation: w7 0.84s ease-in-out -0.05s infinite alternate;"/>
+        style="animation: w7 0.84s ease-in-out -0.05s 1 alternate forwards;"/>
 
   <!-- Wordmark -->
   <text x="344" y="80"
